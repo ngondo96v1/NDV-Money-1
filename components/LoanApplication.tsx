@@ -438,25 +438,25 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
                 <div className="flex gap-2.5">
                   <div className="w-4 h-4 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[9px] text-black">1</div>
                   <p className="text-[9px] font-bold text-gray-300 leading-tight">
-                    <span className="text-[#ff8c00]">Lãi suất:</span> 0% cho toàn bộ kỳ hạn vay.
+                    <span className="text-[#ff8c00]">Lãi suất:</span> Ưu đãi 0% cho tất cả các khoản vay trong kỳ hạn quy định.
                   </p>
                 </div>
                 <div className="flex gap-2.5">
                   <div className="w-4 h-4 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[9px] text-black">2</div>
                   <p className="text-[9px] font-bold text-gray-300 leading-tight">
-                    <span className="text-[#ff8c00]">Hạn mức:</span> Tối đa 10 triệu VNĐ trong chu kỳ 30 ngày.
+                    <span className="text-[#ff8c00]">Hạn mức:</span> Tổng dư nợ tối đa không vượt quá 10.000.000 VNĐ trong chu kỳ 30 ngày.
                   </p>
                 </div>
                 <div className="flex gap-2.5">
                   <div className="w-4 h-4 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[9px] text-black">3</div>
                   <p className="text-[9px] font-bold text-gray-300 leading-tight">
-                    <span className="text-[#ff8c00]">Vay bổ sung:</span> Được vay nhiều lần nếu còn hạn mức khả dụng.
+                    <span className="text-[#ff8c00]">Vay bổ sung:</span> Bạn có thể đăng ký vay nhiều lần nếu tổng dư nợ chưa đạt giới hạn tối đa.
                   </p>
                 </div>
                 <div className="flex gap-2.5">
                   <div className="w-4 h-4 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[9px] text-black">4</div>
                   <p className="text-[9px] font-bold text-gray-300 leading-tight">
-                    <span className="text-[#ff8c00]">Xét duyệt:</span> Chỉ xử lý 01 yêu cầu vay tại một thời điểm.
+                    <span className="text-[#ff8c00]">Quy trình:</span> Hệ thống chỉ xử lý duy nhất 01 yêu cầu vay tại một thời điểm để đảm bảo an toàn.
                   </p>
                 </div>
               </div>
@@ -822,10 +822,10 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
                    </div>
                    <div className="space-y-1.5">
                       {[
-                        "Chọn Tất Toán hoặc Gia hạn để tiếp tục.",
-                        "Chuyển khoản đúng Số tiền và Nội dung theo mã QR.",
-                        "Nhập chính xác Mã giao dịch (FT...) để đối soát.",
-                        "Tải ảnh Biên lai rõ nét để Admin xác nhận."
+                        "Lựa chọn hình thức: Tất toán toàn bộ (TT), Tất toán một phần (TTMP) hoặc Gia hạn (GH).",
+                        "Thanh toán: Quét mã QR và kiểm tra kỹ số tiền cũng như nội dung chuyển khoản trước khi xác nhận.",
+                        "Minh chứng: Chụp ảnh Biên lai (Bill) giao dịch rõ nét, hiển thị đầy đủ mã giao dịch và thời gian.",
+                        "Xác nhận: Tải ảnh Bill lên hệ thống để bộ phận đối soát kiểm tra và cập nhật trạng thái khoản vay."
                       ].map((text, idx) => (
                         <div key={idx} className="flex gap-2">
                           <div className="w-3.5 h-3.5 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[8px] text-black">{idx + 1}</div>

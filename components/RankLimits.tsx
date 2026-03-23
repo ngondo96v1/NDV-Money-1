@@ -210,10 +210,10 @@ const RankLimits: React.FC<RankLimitsProps> = ({ user, isGlobalProcessing, onBac
                </div>
                <div className="space-y-2.5">
                   {[
-                    "Quét mã QR hoặc sao chép thông tin tài khoản thụ hưởng phí.",
-                    "Thực hiện chuyển khoản 24/7 qua ứng dụng Ngân hàng của bạn.",
-                    "Lưu lại ảnh Biên lai (Bill) giao dịch thành công làm bằng chứng.",
-                    "Tải ảnh Bill lên hệ thống và gửi yêu cầu để Admin phê duyệt hạng."
+                    "Quét mã QR hoặc sao chép thông tin tài khoản để thanh toán phí nâng hạng.",
+                    "Thực hiện chuyển khoản 24/7 với nội dung chuyển khoản chính xác như yêu cầu.",
+                    "Chụp ảnh màn hình Biên lai (Bill) giao dịch thành công để làm bằng chứng xác thực.",
+                    "Tải ảnh Bill lên hệ thống và nhấn \"Gửi yêu cầu\" để hệ thống phê duyệt nâng hạng."
                   ].map((text, idx) => (
                     <div key={idx} className="flex gap-2.5">
                       <div className="w-4 h-4 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[9px] text-black">{idx + 1}</div>
@@ -385,11 +385,15 @@ const RankLimits: React.FC<RankLimitsProps> = ({ user, isGlobalProcessing, onBac
            <div className="grid grid-cols-1 gap-1.5">
               <div className="flex gap-2">
                 <div className="w-3.5 h-3.5 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[8px] text-black">1</div>
-                <p className="text-[8px] font-bold text-gray-300 leading-tight">Nâng hạng giúp tăng hạn mức vay, ưu tiên duyệt và giảm phí phạt.</p>
+                <p className="text-[8px] font-bold text-gray-300 leading-tight">Nâng hạng giúp tăng hạn mức vay tối đa, ưu tiên xét duyệt lệnh và nhận các đặc quyền riêng.</p>
               </div>
               <div className="flex gap-2">
                 <div className="w-3.5 h-3.5 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[8px] text-black">2</div>
-                <p className="text-[8px] font-bold text-gray-300 leading-tight">Phí nâng hạng cố định: 5% giá trị hạn mức tối đa của hạng mới.</p>
+                <p className="text-[8px] font-bold text-gray-300 leading-tight">Phí nâng hạng được tính cố định là 5% dựa trên hạn mức tối đa của cấp bậc mục tiêu.</p>
+              </div>
+              <div className="flex gap-2">
+                <div className="w-3.5 h-3.5 bg-[#ff8c00] rounded-full flex items-center justify-center shrink-0 font-black text-[8px] text-black">3</div>
+                <p className="text-[8px] font-bold text-gray-300 leading-tight">Sau khi gửi yêu cầu, vui lòng đợi hệ thống kiểm tra và phê duyệt trong vòng 5-15 phút.</p>
               </div>
            </div>
         </div>
