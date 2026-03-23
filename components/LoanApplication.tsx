@@ -355,14 +355,17 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
     }
   };
 
-  const getStatusColor = (status: string, isOverdue: boolean) => {
+  const getStatusColor = (status: string, isOverdue: boolean, settlementType?: string) => {
     if (isOverdue) return 'text-red-500';
     switch (status) {
       case 'CHỜ DUYỆT': return 'text-orange-500';
       case 'ĐÃ DUYỆT': return 'text-blue-500';
       case 'ĐANG GIẢI NGÂN': return 'text-cyan-500';
       case 'ĐANG NỢ': return 'text-orange-600';
-      case 'CHỜ TẤT TOÁN': return 'text-indigo-500';
+      case 'CHỜ TẤT TOÁN': 
+        if (settlementType === 'ALL') return 'text-green-500';
+        if (settlementType === 'PARTIAL') return 'text-amber-500';
+        return 'text-blue-500';
       case 'ĐÃ TẤT TOÁN': return 'text-green-500';
       case 'BỊ TỪ CHỐI': return 'text-gray-500';
       default: return 'text-gray-400';
@@ -532,7 +535,7 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
                 .map((item, idx) => {
                 const [d, m, y] = item.date.split('/').map(Number);
                 const isOverdue = (item.status === 'ĐANG NỢ' || item.status === 'CHỜ TẤT TOÁN') && new Date(y, m - 1, d) < today;
-                const statusColor = getStatusColor(item.status, isOverdue);
+                const statusColor = getStatusColor(item.status, isOverdue, item.settlementType);
 
                 return (
                   <div key={idx} className={`bg-[#111111] border rounded-2xl p-3.5 flex flex-col gap-2.5 ${isOverdue ? 'border-red-600/30 bg-red-600/5' : 'border-white/5'}`}>
@@ -547,9 +550,24 @@ const LoanApplication: React.FC<LoanApplicationProps> = ({ user, loans, systemBu
                             <span className="text-[7px] font-black text-gray-600 uppercase tracking-widest">#{item.id}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <div className={`w-1 h-1 rounded-full ${item.status === 'ĐÃ TẤT TOÁN' ? 'bg-green-500' : isOverdue ? 'bg-red-500 animate-pulse' : 'bg-orange-500 animate-pulse'}`}></div>
-                            <span className={`text-[7px] font-black uppercase ${statusColor}`}>
+                            <div className={`w-1 h-1 rounded-full ${
+                              item.status === 'ĐÃ TẤT TOÁN' ? 'bg-green-500' : 
+                              isOverdue ? 'bg-red-500 animate-pulse' : 
+                              item.status === 'CHỜ TẤT TOÁN' ? (
+                                item.settlementType === 'ALL' ? 'bg-green-500 animate-pulse' : 
+                                (item.settlementType === 'PARTIAL' ? 'bg-amber-500 animate-pulse' : 'bg-blue-500 animate-pulse')
+                              ) : 'bg-orange-500 animate-pulse'
+                            }`}></div>
+                            <span className={`text-[7px] font-black uppercase flex items-center ${statusColor}`}>
                               {isOverdue ? 'QUÁ HẠN' : item.status}
+                              {item.status === 'CHỜ TẤT TOÁN' && (
+                                <span className={`px-1 rounded text-[6px] ml-1 ${
+                                  item.settlementType === 'ALL' ? 'bg-green-500 text-white' : 
+                                  (item.settlementType === 'PARTIAL' ? 'bg-amber-500 text-white' : 'bg-blue-500 text-white')
+                                }`}>
+                                  {item.settlementType === 'PRINCIPAL' ? 'GH' : (item.settlementType === 'PARTIAL' ? 'TTMP' : 'TT')}
+                                </span>
+                              )}
                             </span>
                           </div>
                         </div>

@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { User, UserRank, LoanRecord, Notification } from '../types';
-import { TrendingUp, CreditCard, History, FileText, CalendarDays, Star, Activity, AlertCircle, ChevronRight, Eye, Bell, RefreshCcw } from 'lucide-react';
+import { TrendingUp, CreditCard, History, FileText, CalendarDays, Star, Activity, AlertCircle, ChevronRight, Eye, Bell, RefreshCcw, AlertTriangle } from 'lucide-react';
 import NotificationModal from './NotificationModal';
 
 interface DashboardProps {
@@ -85,14 +85,17 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
   };
 
-  const getStatusStyles = (status: string, isOverdue: boolean) => {
+  const getStatusStyles = (status: string, isOverdue: boolean, settlementType?: string) => {
     if (isOverdue) return 'text-red-500';
     switch (status) {
       case 'CHỜ DUYỆT': return 'text-orange-500';
       case 'ĐÃ DUYỆT': return 'text-blue-500';
       case 'ĐANG GIẢI NGÂN': return 'text-cyan-500';
       case 'ĐANG NỢ': return 'text-orange-600';
-      case 'CHỜ TẤT TOÁN': return 'text-indigo-500';
+      case 'CHỜ TẤT TOÁN': 
+        if (settlementType === 'ALL') return 'text-green-500';
+        if (settlementType === 'PARTIAL') return 'text-amber-500';
+        return 'text-blue-500';
       case 'ĐÃ TẤT TOÁN': return 'text-green-500';
       case 'BỊ TỪ CHỐI': return 'text-gray-500';
       default: return 'text-gray-400';
@@ -241,6 +244,116 @@ const Dashboard: React.FC<DashboardProps> = ({
             <p className="text-[7px] font-bold text-gray-500 uppercase tracking-tighter">Kỳ hạn tiếp theo</p>
             <p className="text-sm font-black text-white">{loans.length > 0 ? displayDueDate : '--/--/--'}</p>
           </div>
+        </div>
+      </div>
+
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2 text-gray-400">
+            <History size={14} />
+            <h3 className="text-[9px] font-black uppercase tracking-widest">Lịch sử giao dịch</h3>
+          </div>
+          <button 
+            onClick={onViewAllLoans}
+            className="text-[8px] font-black text-[#ff8c00] uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all"
+          >
+            Xem tất cả <ChevronRight size={12} />
+          </button>
+        </div>
+
+        <div className="space-y-2 pb-10">
+          {loans.length === 0 ? (
+            <div className="bg-[#111111]/50 border border-white/5 border-dashed rounded-2xl p-8 text-center">
+              <p className="text-[9px] font-black text-gray-700 uppercase tracking-widest">Chưa có giao dịch nào</p>
+            </div>
+          ) : (
+            displayedLoans.map((item, idx) => {
+              const [d, m, y] = item.date.split('/').map(Number);
+              const isOverdue = (item.status === 'ĐANG NỢ' || item.status === 'CHỜ TẤT TOÁN') && new Date(y, m - 1, d) < today;
+              const statusColor = getStatusStyles(item.status, isOverdue, item.settlementType);
+
+              return (
+                <div key={idx} className={`bg-[#111111] border rounded-2xl p-3.5 flex flex-col gap-2.5 ${isOverdue ? 'border-red-600/30 bg-red-600/5' : 'border-white/5'}`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-gray-500">
+                        <FileText size={18} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <p className="text-sm font-black text-white leading-none">{item.amount.toLocaleString()} đ</p>
+                          <span className="text-[7px] font-black text-gray-600 uppercase tracking-widest">#{item.id}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className={`w-1 h-1 rounded-full ${
+                            item.status === 'ĐÃ TẤT TOÁN' ? 'bg-green-500' : 
+                            isOverdue ? 'bg-red-500 animate-pulse' : 
+                            item.status === 'CHỜ TẤT TOÁN' ? (
+                              item.settlementType === 'ALL' ? 'bg-green-500 animate-pulse' : 
+                              (item.settlementType === 'PARTIAL' ? 'bg-amber-500 animate-pulse' : 'bg-blue-500 animate-pulse')
+                            ) : 'bg-orange-500 animate-pulse'
+                          }`}></div>
+                          <span className={`text-[7px] font-black uppercase flex items-center ${statusColor}`}>
+                            {isOverdue ? 'QUÁ HẠN' : item.status}
+                            {item.status === 'CHỜ TẤT TOÁN' && (
+                              <span className={`px-1 rounded text-[6px] ml-1 ${
+                                item.settlementType === 'ALL' ? 'bg-green-500 text-white' : 
+                                (item.settlementType === 'PARTIAL' ? 'bg-amber-500 text-white' : 'bg-blue-500 text-white')
+                              }`}>
+                                {item.settlementType === 'PRINCIPAL' ? 'GH' : (item.settlementType === 'PARTIAL' ? 'TTMP' : 'TT')}
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                       <button 
+                         onClick={() => onViewContract?.(item)}
+                         className="w-7 h-7 bg-white/5 rounded-lg flex items-center justify-center text-gray-500 hover:text-white transition-all"
+                       >
+                         <Eye size={14} />
+                       </button>
+                       {(item.status === 'ĐANG NỢ' || item.status === 'ĐANG GIẢI NGÂN') && (
+                         <button 
+                           onClick={() => onSettleLoan?.(item)}
+                           className="bg-white text-black font-black px-2.5 py-1.5 rounded-lg text-[7px] uppercase tracking-widest active:scale-95 transition-all"
+                         >
+                           Tất toán
+                         </button>
+                       )}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-1">
+                    {item.rejectionReason && (
+                      <div className="flex items-center justify-center gap-1.5 whitespace-nowrap overflow-hidden mb-0.5">
+                        <AlertTriangle size={8} className="text-red-500 shrink-0" />
+                        <p className="text-[7px] font-black text-red-500 uppercase tracking-widest truncate">
+                          Lý do từ chối: {item.rejectionReason}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="border-t border-white/5 pt-1.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex gap-2.5">
+                          <p className="text-[7px] font-bold text-gray-700">Hạn: {item.date}</p>
+                          <p className="text-[7px] font-bold text-gray-700">Tạo: {item.createdAt}</p>
+                        </div>
+                        {isOverdue && (
+                          <div className="text-right">
+                            <p className="text-[6px] font-black text-gray-600 uppercase tracking-widest leading-none">Phí phạt trễ hạn</p>
+                            <p className="text-[9px] font-black text-red-500">{(item.fine || 0).toLocaleString()} đ</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 

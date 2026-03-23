@@ -212,8 +212,14 @@ const AdminLoanApproval: React.FC<AdminLoanApprovalProps> = ({ loans, isGlobalPr
                                   <span className="text-[8px] font-black text-blue-500 uppercase tracking-widest">Bill Đối Soát Tất Toán</span>
                                 </div>
                                 {loan.settlementType && (
-                                  <span className={`text-[7px] font-black px-1.5 py-0.5 rounded uppercase ${loan.settlementType === 'ALL' ? 'bg-green-500/20 text-green-500' : 'bg-blue-500/20 text-blue-500'}`}>
-                                    {loan.settlementType === 'ALL' ? 'Tất Toán' : 'Gia hạn'}
+                                  <span className={`text-[7px] font-black px-1.5 py-0.5 rounded uppercase border ${
+                                    loan.settlementType === 'ALL' 
+                                      ? 'bg-green-500/10 text-green-500 border-green-500/20' 
+                                      : (loan.settlementType === 'PARTIAL' 
+                                        ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' 
+                                        : 'bg-blue-500/10 text-blue-500 border-blue-500/20')
+                                  }`}>
+                                    {loan.settlementType === 'ALL' ? 'Tất Toán' : (loan.settlementType === 'PARTIAL' ? 'TTMP' : 'Gia hạn')}
                                   </span>
                                 )}
                               </div>
@@ -321,9 +327,14 @@ const AdminLoanApproval: React.FC<AdminLoanApprovalProps> = ({ loans, isGlobalPr
                                       setIsProcessing(null);
                                     }}
                                     disabled={!!isProcessing || isGlobalProcessing}
-                                    className={`flex-1 bg-green-600 text-white py-2.5 rounded-lg font-black text-[9px] uppercase active:scale-95 transition-all flex items-center justify-center gap-1.5 ${isProcessing === loan.id || isGlobalProcessing ? 'opacity-50' : ''}`}
+                                    className={`flex-1 text-white py-2.5 rounded-lg font-black text-[9px] uppercase active:scale-95 transition-all flex items-center justify-center gap-1.5 ${
+                                      isProcessing === loan.id || isGlobalProcessing ? 'opacity-50' : ''
+                                    } ${
+                                      loan.settlementType === 'ALL' ? 'bg-green-600' : 
+                                      (loan.settlementType === 'PARTIAL' ? 'bg-amber-500' : 'bg-blue-600')
+                                    }`}
                                   >
-                                    <CheckCircle2 size={12} /> {isProcessing === loan.id || isGlobalProcessing ? 'Đang xác nhận...' : (loan.settlementType === 'ALL' ? 'Xác nhận Tất toán' : 'Xác nhận Gia hạn')}
+                                    <CheckCircle2 size={12} /> {isProcessing === loan.id || isGlobalProcessing ? 'Đang xác nhận...' : (loan.settlementType === 'ALL' ? 'Xác nhận Tất toán' : (loan.settlementType === 'PARTIAL' ? 'Xác nhận TTMP' : 'Xác nhận Gia hạn'))}
                                   </button>
                                   <button 
                                     onClick={() => setRejectingLoanId(rejectingLoanId === loan.id ? null : loan.id)}

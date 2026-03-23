@@ -620,7 +620,10 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = ({ users, loans,
                                     <div className={`px-2.5 py-1 rounded-lg text-[7px] font-black uppercase flex items-center gap-1 ${statusStyles}`}>
                                       {isOverdue ? 'QUÁ HẠN' : loan.status}
                                       {loan.status === 'CHỜ TẤT TOÁN' && (
-                                        <span className="bg-white/20 px-1 rounded text-[6px] ml-1">
+                                        <span className={`px-1 rounded text-[6px] ml-1 ${
+                                          loan.settlementType === 'ALL' ? 'bg-green-500 text-white' : 
+                                          (loan.settlementType === 'PARTIAL' ? 'bg-amber-500 text-white' : 'bg-blue-500 text-white')
+                                        }`}>
                                           {loan.settlementType === 'PRINCIPAL' ? 'GH' : (loan.settlementType === 'PARTIAL' ? 'TTMP' : 'TT')}
                                         </span>
                                       )}
@@ -628,9 +631,15 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = ({ users, loans,
                                 </div>
 
                                 {loan.status === 'CHỜ TẤT TOÁN' && (
-                                  <div className="space-y-2.5 bg-blue-500/5 border border-blue-500/20 rounded-xl p-3">
+                                  <div className={`space-y-2.5 border rounded-xl p-3 ${
+                                    loan.settlementType === 'ALL' ? 'bg-green-500/5 border-green-500/20' : 
+                                    (loan.settlementType === 'PARTIAL' ? 'bg-amber-500/5 border-amber-500/20' : 'bg-blue-500/5 border-blue-500/20')
+                                  }`}>
                                      <div className="flex items-center justify-between">
-                                       <div className="flex items-center gap-1.5 text-blue-500"><ImageIcon size={12} /><span className="text-[8px] font-black uppercase tracking-widest">Bill {loan.settlementType === 'PRINCIPAL' ? 'Gia hạn' : (loan.settlementType === 'PARTIAL' ? 'Tất toán 1 phần' : 'Tất toán')}</span></div>
+                                       <div className={`flex items-center gap-1.5 ${
+                                         loan.settlementType === 'ALL' ? 'text-green-500' : 
+                                         (loan.settlementType === 'PARTIAL' ? 'text-amber-500' : 'text-blue-500')
+                                       }`}><ImageIcon size={12} /><span className="text-[8px] font-black uppercase tracking-widest">Bill {loan.settlementType === 'PRINCIPAL' ? 'Gia hạn' : (loan.settlementType === 'PARTIAL' ? 'Tất toán 1 phần' : 'Tất toán')}</span></div>
                                        {loan.bankTransactionId && (
                                          <div className="flex items-center gap-1.5 bg-blue-500/10 px-2 py-0.5 rounded-md border border-blue-500/20">
                                            <span className="text-[7px] font-black text-blue-400 uppercase tracking-tighter">Mã GD: {loan.bankTransactionId}</span>
@@ -817,9 +826,14 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = ({ users, loans,
                                               await onLoanAction(loan.id, 'SETTLE');
                                             }} 
                                             disabled={isGlobalProcessing}
-                                            className={`flex-1 bg-green-600 text-white py-3 rounded-lg font-black text-[9px] uppercase flex items-center justify-center gap-1.5 active:scale-95 transition-all ${isGlobalProcessing ? 'opacity-50' : ''}`}
+                                            className={`flex-1 text-white py-3 rounded-lg font-black text-[9px] uppercase flex items-center justify-center gap-1.5 active:scale-95 transition-all ${
+                                              isGlobalProcessing ? 'opacity-50' : ''
+                                            } ${
+                                              loan.settlementType === 'ALL' ? 'bg-green-600' : 
+                                              (loan.settlementType === 'PARTIAL' ? 'bg-amber-500' : 'bg-blue-600')
+                                            }`}
                                           >
-                                            <CheckCircle2 size={12} /> {isGlobalProcessing ? 'Đang xử lý...' : (loan.settlementType === 'ALL' ? 'Xác nhận Tất toán' : 'Xác nhận Gia hạn')}
+                                            <CheckCircle2 size={12} /> {isGlobalProcessing ? 'Đang xử lý...' : (loan.settlementType === 'ALL' ? 'Xác nhận Tất toán' : (loan.settlementType === 'PARTIAL' ? 'Xác nhận TTMP' : 'Xác nhận Gia hạn'))}
                                           </button>
                                           <button 
                                             onClick={(e) => {
